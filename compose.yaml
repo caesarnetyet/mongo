@@ -1,0 +1,11 @@
+services:
+  mongo:
+    image: mongo
+    ports:
+      - "27030:27030"
+    volumes:
+      - ./conf:/etc/mongo
+    command: mongod -f /etc/mongo/mongod.conf
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mongoadmin
+      - MONGO_INITDB_ROOT_PASSWORD=secret
