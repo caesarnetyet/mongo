@@ -1,11 +1,44 @@
 services:
-  mongo:
+  mongo-primary:
     image: mongo
     ports:
       - "27030:27030"
     volumes:
       - ./conf:/etc/mongo
-    command: mongod -f /etc/mongo/mongod.conf
+      - ./keyfile:/etc/mongo/keyfile
+    command: mongod --config /etc/mongo/mongod.conf --replSet myReplicaSet
     environment:
       - MONGO_INITDB_ROOT_USERNAME=mongoadmin
       - MONGO_INITDB_ROOT_PASSWORD=secret
+    networks:
+      - mongo-net
+  mongo-secondary:
+    image: mongo
+    ports:
+      - "27029:27030"
+    volumes:
+      - ./conf:/etc/mongo
+      - ./keyfile:/etc/mongo/keyfile
+    command: mongod --config /etc/mongo/mongod.conf --replSet myReplicaSet
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mongoadmin
+      - MONGO_INITDB_ROOT_PASSWORD=secret
+    networks:
+      - mongo-net
+  mongo-secondary-2:
+    image: mongo
+    ports:
+      - "27028:27030"
+    volumes:
+      - ./conf:/etc/mongo
+      - ./keyfile:/etc/mongo/keyfile
+    command: mongod --config /etc/mongo/mongod.conf --replSet myReplicaSet
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mongoadmin
+      - MONGO_INITDB_ROOT_PASSWORD=secret
+    networks:
+      - mongo-net
+
+networks:
+  mongo-net:
+    driver: bridge
